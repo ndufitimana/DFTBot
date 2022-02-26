@@ -70,7 +70,7 @@ async def on_message(message):
         await message.channel.send(encouragements)
 
     if msg.startswith("$responding"):
-        value = msg.split("$responding", 1)[1]
+        value = msg.split("$responding ", 1)[1]
         if value.lower() == "true":
             db["responding"] = True
             await message.channel.send("Responding is on")
