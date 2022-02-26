@@ -46,9 +46,10 @@ async def on_message(message):
         quote = get_quote()
         await message.channel.send(quote)
     if db["responding"]: 
-        options = starter_encourage
         if "encouragements" in db.keys():
-            options = options + list(db["encouragements"])
+            options = list(db["encouragements"])
+            for msg_encourage in starter_encourage:
+                options.append(msg_encourage)
         if any(word in msg for word in key_words):
             await message.channel.send(random.choice(options))
     if msg.startswith("$new"):
