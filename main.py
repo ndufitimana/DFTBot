@@ -18,6 +18,15 @@ def get_quote():
   json_data = json.loads(response.text)
   quote = json_data[0]['q'] + " -" + json_data[0]['a']
   return(quote)
+
+def get_review(book_title):
+    response=requests.get(f"https://api.nytimes.com/svc/books/v3/reviews.json?title={book_title}&api-key={os.getenv('my_key')}")
+    data = response.json()
+    if response.status_code not in range(200, 299) or len(data["results"])==0:
+        return None
+    else:
+        return data["results"][0]['url']
+    
     
 def update_encouragement(message):
     if "encouragements" in db.keys():
@@ -59,10 +68,18 @@ async def on_message(message):
     if msg.startswith("$del"):
         encouragements = []
         if "encouragements" in db.keys():
-            index = int(msg.split("$del", 1)[1])
+            index = int(msg.split("$del ", 1)[1])
             delete_encouragement(index)
             encouragements = list(db["encouragements"])
         await message.channel.send(encouragements)
+    if msg.startswith("$review"):
+        book_title = msg.split("$review ", 1)[1]
+        book_review = get_review(book_title)
+        if book_review is None:
+            await message.channel.send("No Review Found!")
+        else: 
+            await message.channel.send(book_review)
+        
     
     if msg.startswith("$list"):
         encouragements = starter_encourage
