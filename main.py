@@ -7,8 +7,6 @@ import time
 import asyncio
 from util_functions import get_quote, get_review, update_encouragement, delete_encouragement
 
-
-#server id: 
     
 client = discord.Client()
 key_words = ["sad", "depressed", "unhappy", "angry", 
@@ -34,13 +32,11 @@ async def update_stats():
             await asyncio.sleep(43200) #log every 12 hours 
         except Exception as e:
             print(e)
-            await asyncio.sleep(43200)
-        
-    
-     
+            await asyncio.sleep(43200) 
 @client.event
 async def on_ready():
-  print('We have logged in as {0.user}'.format(client))
+    print('We have logged in as {0.user}'.format(client))
+    
 
 @client.event
 async def on_member_join(member):
@@ -50,16 +46,12 @@ async def on_member_join(member):
         if str(channel) == "general":
             await client.send_message(f"Welcome here {member.mention}")
 
-
-    
-   
-
 @client.event
 async def on_message(message):
     global messages
     messages +=1
 
-    id = client.get_guild(946860969320144937)
+    server_id = client.get_guild(int(os.getenv("server_id")))
     
     if str(message.channel) in channels: 
         #allow commands in specific channels
@@ -95,7 +87,7 @@ async def on_message(message):
             else: 
                 await message.channel.send(book_review)
         if msg.startswith("$users"):
-            await message.channel.send(f"# of users: {id.member_count}")
+            await message.channel.send(f"# of users: {server_id.member_count}")
         if msg.startswith("$help"):
             embed = discord.Embed(title = "BOT Help", description= "Useful Commands")
             embed.add_field(name="$inspire", value="Get an inspirational quote")
@@ -121,5 +113,6 @@ async def on_message(message):
 
 keep_alive()
 client.loop.create_task(update_stats())
+
 client.run(os.getenv('TOKEN'))
 
